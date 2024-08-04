@@ -1,6 +1,8 @@
 package com.ock.assisteddeploy.dxb.acquirer;
 
 import com.ock.assisteddeploy.dxb.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +12,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 
-@Component
+@Component("localBuildAcquirer")
 public class LocalBuildAcquirer implements ArtifactAcquirer {
+
+    private static final Logger logger = LoggerFactory.getLogger(LocalBuildAcquirer.class);
 
     @Autowired
     private Configuration config;
@@ -31,7 +35,7 @@ public class LocalBuildAcquirer implements ArtifactAcquirer {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                logger.info(line);
             }
             //return process exit code
             return process.waitFor();
