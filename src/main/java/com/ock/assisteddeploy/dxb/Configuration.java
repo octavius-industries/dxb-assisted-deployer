@@ -3,12 +3,24 @@ package com.ock.assisteddeploy.dxb;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.util.List;
+
 @Component
 @ConfigurationProperties(prefix = "dad")
 public class Configuration {
 
+    private File artifactVault;
+
     private Build build;
 
+    public File getArtifactVault() {
+        return artifactVault;
+    }
+
+    public void setArtifactVault(File artifactVault) {
+        this.artifactVault = artifactVault;
+    }
 
     public Build getBuild() {
         return build;
@@ -23,6 +35,8 @@ public class Configuration {
 
         private String command;
 
+        private List<File> artifacts;
+
         public String getCommand() {
             return command;
         }
@@ -31,6 +45,12 @@ public class Configuration {
             this.command = command;
         }
 
+        public List<File> getArtifacts() {
+            return artifacts;
+        }
 
+        public void setArtifacts(List<File> artifacts) {
+            this.artifacts = artifacts;
+        }
     }
 }

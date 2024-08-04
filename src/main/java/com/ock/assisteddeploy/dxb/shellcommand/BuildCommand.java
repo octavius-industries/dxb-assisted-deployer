@@ -25,6 +25,8 @@ public class BuildCommand {
     @Qualifier("localBuildAcquirer")
     private ArtifactAcquirer acquirer;
 
+    @Autowired
+    private VaultKeeper vaultKeeper;
 
     @ShellMethod(value = "Build the source code locally. This compiles the source into artifacts for deployment.")
     public void build(
@@ -39,6 +41,8 @@ public class BuildCommand {
 
         if (exitCode == 0) {
             logger.info("Build complete. {}", repoDirectory.getAbsolutePath());
+            vaultKeeper.clear();
+            vaultKeeper.store();
         } else {
             logger.info("Build fail. {}", repoDirectory.getAbsolutePath());
         }
