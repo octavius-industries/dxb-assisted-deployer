@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.util.List;
+import java.net.URL;
 
 @Component
 @ConfigurationProperties(prefix = "dad")
@@ -13,6 +14,8 @@ public class Configuration {
     private File artifactVault;
 
     private Build build;
+
+    private Retrieve retrieve;
 
     public File getArtifactVault() {
         return artifactVault;
@@ -30,6 +33,13 @@ public class Configuration {
         this.build = build;
     }
 
+    public Retrieve getRetrieve() {
+        return retrieve;
+    }
+
+    public void setRetrieve(Retrieve retrieve) {
+        this.retrieve = retrieve;
+    }
 
     public static class Build {
 
@@ -50,6 +60,19 @@ public class Configuration {
         }
 
         public void setArtifacts(List<File> artifacts) {
+            this.artifacts = artifacts;
+        }
+    }
+
+    public static class Retrieve {
+
+        private List<URL> artifacts;
+
+        public List<URL> getArtifacts() {
+            return artifacts;
+        }
+
+        public void setArtifacts(List<URL> artifacts) {
             this.artifacts = artifacts;
         }
     }
