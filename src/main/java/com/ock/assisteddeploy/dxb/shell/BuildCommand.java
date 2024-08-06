@@ -27,7 +27,7 @@ public class BuildCommand {
     @Autowired
     private VaultKeeper vaultKeeper;
 
-    @ShellMethod(value = "Build the source code locally. This compiles the source into artifacts for deployment.")
+    @ShellMethod(value = "Build the source code locally. This compiles the source into artifacts and put into artifact vault for deployment.")
     public void build(
             @ShellOption(
                     value = "repo",

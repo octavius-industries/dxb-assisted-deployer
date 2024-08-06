@@ -17,7 +17,10 @@ public class RetrieveCommand {
     @Qualifier("remoteServerAcquirer")
     private ArtifactAcquirer acquirer;
 
-    @ShellMethod(value = "Retrieve the artifact from the build server")
+    @ShellMethod(
+            value = "Retrieve the artifact from the build server to artifact vault",
+            key = "get"
+    )
     public void retrieve() {
         logger.info("Retrieve start.");
         acquirer.acquire(null);
