@@ -4,5 +4,5 @@ import java.net.URI;
 
 public interface ArtifactAcquirer {
 
-    public int acquire(URI uri);
+    int acquire(URI uri);
 }
