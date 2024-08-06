@@ -1,4 +1,4 @@
-package com.ock.assisteddeploy.dxb.acquirer;
+package com.ock.assisteddeploy.dxb.acquire;
 
 import com.ock.assisteddeploy.dxb.Configuration;
 import okhttp3.Call;

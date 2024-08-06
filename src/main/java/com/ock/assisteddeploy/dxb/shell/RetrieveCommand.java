@@ -1,6 +1,6 @@
-package com.ock.assisteddeploy.dxb.shellcommand;
+package com.ock.assisteddeploy.dxb.shell;
 
-import com.ock.assisteddeploy.dxb.acquirer.ArtifactAcquirer;
+import com.ock.assisteddeploy.dxb.acquire.ArtifactAcquirer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
