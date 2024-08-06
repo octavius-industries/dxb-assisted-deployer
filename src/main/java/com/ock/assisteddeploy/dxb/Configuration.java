@@ -43,6 +43,14 @@ public class Configuration {
         this.retrieve = retrieve;
     }
 
+    public Distribute getDistribute() {
+        return distribute;
+    }
+
+    public void setDistribute(Distribute distribute) {
+        this.distribute = distribute;
+    }
+
     public static class Build {
 
         private String command;
@@ -83,7 +91,7 @@ public class Configuration {
 
         private String hostname;
 
-        private String port;
+        private int port;
 
         private String user;
 
@@ -91,7 +99,9 @@ public class Configuration {
 
         private String deploymentBase;
 
-        private String deploymentSkeleton;
+        private File deploymentSkeleton;
+
+        private File artifactBase;
 
         public String getHostname() {
             return hostname;
@@ -101,11 +111,11 @@ public class Configuration {
             this.hostname = hostname;
         }
 
-        public String getPort() {
+        public int getPort() {
             return port;
         }
 
-        public void setPort(String port) {
+        public void setPort(int port) {
             this.port = port;
         }
 
@@ -133,12 +143,20 @@ public class Configuration {
             this.deploymentBase = deploymentBase;
         }
 
-        public String getDeploymentSkeleton() {
+        public File getDeploymentSkeleton() {
             return deploymentSkeleton;
         }
 
-        public void setDeploymentSkeleton(String deploymentSkeleton) {
+        public void setDeploymentSkeleton(File deploymentSkeleton) {
             this.deploymentSkeleton = deploymentSkeleton;
+        }
+
+        public File getArtifactBase() {
+            return artifactBase;
+        }
+
+        public void setArtifactBase(File artifactBase) {
+            this.artifactBase = artifactBase;
         }
     }
 }
