@@ -101,7 +101,7 @@ public class Configuration {
 
         private File deploymentSkeleton;
 
-        private File artifactBase;
+        private String artifactBase;
 
         public String getHostname() {
             return hostname;
@@ -151,11 +151,11 @@ public class Configuration {
             this.deploymentSkeleton = deploymentSkeleton;
         }
 
-        public File getArtifactBase() {
+        public String getArtifactBase() {
             return artifactBase;
         }
 
-        public void setArtifactBase(File artifactBase) {
+        public void setArtifactBase(String artifactBase) {
             this.artifactBase = artifactBase;
         }
     }

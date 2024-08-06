@@ -67,9 +67,17 @@ public class FtpDistributor implements ArtifactDistributor {
 
     }
 
-    protected void uploadArtifact(FTPClient ftp, String folderLabel) {
-        // TODO
+    protected void uploadArtifact(FTPClient ftp, String folderLabel) throws IOException {
+        Configuration.Distribute distributeConfig = config.getDistribute();
+        ftp.changeWorkingDirectory(distributeConfig.getDeploymentBase());
+        ftp.changeWorkingDirectory(folderLabel);
+        ftp.changeWorkingDirectory(distributeConfig.getArtifactBase());
 
+        File[] artifacts = config.getArtifactVault().listFiles();
+        for (File artifact : artifacts) {
+            putFile(ftp, artifact);
+            logger.info("Uploaded {} to {}.", artifact.getName(), ftp.printWorkingDirectory());
+        }
 
     }
 
