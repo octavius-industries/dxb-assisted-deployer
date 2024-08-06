@@ -1,14 +1,13 @@
 package com.ock.assisteddeploy.dxb.distribute;
 
 import com.ock.assisteddeploy.dxb.Configuration;
-import com.ock.assisteddeploy.dxb.shell.RetrieveCommand;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -29,6 +28,9 @@ public class FtpDistributor implements ArtifactDistributor {
         try {
             // connect ftp server
             ftp.connect(distributeConfig.getHostname(), distributeConfig.getPort());
+            ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+            // ftp.enterLocalPassiveMode();
+            ftp.enterLocalActiveMode();
             // login
             boolean validLogin = ftp.login(distributeConfig.getUser(), distributeConfig.getPassword());
             if (validLogin) {
@@ -37,14 +39,17 @@ public class FtpDistributor implements ArtifactDistributor {
 
                 String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").format(LocalDateTime.now());
                 String folderLabel = String.format(SKELETON_LABEL_TEMPLATE, timestamp);
+
                 if (ftp.makeDirectory(folderLabel)) {
-                    logger.info("Deployment folder create: {}", folderLabel);
+                    logger.info("Deployment folder create: {}/{}.", ftp.printWorkingDirectory(), folderLabel);
+
                     // upload deployment skeleton
                     uploadDeploymentSkeleton(ftp, folderLabel);
                     // upload artifact vault
                     uploadArtifact(ftp, folderLabel);
+                } else {
+                    logger.error("Cannot create deployment folder:{}/{}.", ftp.printWorkingDirectory(), folderLabel);
                 }
-
                 ftp.logout();
             }
 
@@ -62,11 +67,54 @@ public class FtpDistributor implements ArtifactDistributor {
 
     }
 
-    private void uploadArtifact(FTPClient ftp, String folderLabel) {
+    protected void uploadArtifact(FTPClient ftp, String folderLabel) {
         // TODO
+
+
     }
 
-    private void uploadDeploymentSkeleton(FTPClient ftp, String folderLabel) {
-        // TODO
+    protected void uploadDeploymentSkeleton(FTPClient ftp, String folderLabel) {
+        Configuration.Distribute distributeConfig = config.getDistribute();
+        try {
+            ftp.changeWorkingDirectory(distributeConfig.getDeploymentBase());
+            ftp.changeWorkingDirectory(folderLabel);
+            for (File file : distributeConfig.getDeploymentSkeleton().listFiles()) {
+                putDirectory(ftp, file);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    protected void putDirectory(FTPClient ftp, File skeleton) throws IOException {
+        // create directory
+        if (!ftp.changeWorkingDirectory(skeleton.getName())) {
+            ftp.makeDirectory(skeleton.getName());
+            ftp.changeWorkingDirectory(skeleton.getName());
+        }
+
+        // for each directory content, either create subdirectory or file
+        File[] files = skeleton.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    putDirectory(ftp, file);
+                } else {
+                    putFile(ftp, file);
+                }
+            }
+            ftp.changeToParentDirectory();
+        }
+    }
+
+    protected void putFile(FTPClient ftp, File file) throws IOException {
+        try (InputStream fileStream = new FileInputStream(file)) {
+            if (!ftp.storeFile(file.getName(), fileStream)) {
+                logger.error("Cannot create file {}/{}, reason: {}({})",
+                        ftp.printWorkingDirectory(), file.getName(), ftp.getReplyString(), ftp.getReplyCode());
+            }
+        }
+    }
+
+
 }
