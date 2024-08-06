@@ -45,9 +45,9 @@ public class RemoteServerCallback implements Callback {
         String artifactUrl = call.request().url().toString();
         String artifactName = FilenameUtils.getName(artifactUrl);
         logger.info("Downloading {}", artifactUrl);
-        latch.countDown();
-        write(response.body(), new File(config.getArtifactVault(), artifactName));
 
+        write(response.body(), new File(config.getArtifactVault(), artifactName));
+        latch.countDown();
     }
 
     // write http response to file
