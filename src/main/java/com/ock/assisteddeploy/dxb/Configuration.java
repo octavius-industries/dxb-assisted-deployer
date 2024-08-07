@@ -19,6 +19,8 @@ public class Configuration {
 
     private Distribute distribute;
 
+    private Deploy deploy;
+
     public File getArtifactVault() {
         return artifactVault;
     }
@@ -40,15 +42,25 @@ public class Configuration {
     }
 
     public void setRetrieve(Retrieve retrieve) {
+
         this.retrieve = retrieve;
     }
 
     public Distribute getDistribute() {
+
         return distribute;
     }
 
     public void setDistribute(Distribute distribute) {
         this.distribute = distribute;
+    }
+
+    public Deploy getDeploy() {
+        return deploy;
+    }
+
+    public void setDeploy(Deploy deploy) {
+        this.deploy = deploy;
     }
 
     public static class Build {
@@ -157,6 +169,59 @@ public class Configuration {
 
         public void setArtifactBase(String artifactBase) {
             this.artifactBase = artifactBase;
+        }
+    }
+
+    public static class Deploy {
+
+        private String hostname;
+
+        private int port;
+
+        private String user;
+
+        private String password;
+
+        private List<String> scripts;
+
+        public String getUser() {
+            return user;
+        }
+
+        public void setUser(String user) {
+            this.user = user;
+        }
+
+        public String getHostname() {
+            return hostname;
+        }
+
+        public void setHostname(String hostname) {
+            this.hostname = hostname;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public List<String> getScripts() {
+            return scripts;
+        }
+
+        public void setScripts(List<String> scripts) {
+            this.scripts = scripts;
         }
     }
 }
