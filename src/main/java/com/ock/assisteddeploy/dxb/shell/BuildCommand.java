@@ -14,7 +14,7 @@ import org.springframework.shell.standard.ShellOption;
 import java.io.File;
 
 @ShellComponent
-public class BuildCommand {
+public class BuildCommand implements Instructable {
     private static final Logger logger = LoggerFactory.getLogger(BuildCommand.class);
 
     @Autowired
@@ -46,6 +46,11 @@ public class BuildCommand {
             logger.info("Build fail. {}", repoDirectory.getAbsolutePath());
         }
 
+
+    }
+
+    @Override
+    public void instruct(Object obj) {
 
     }
 }

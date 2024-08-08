@@ -8,7 +8,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class DistributeCommand {
+public class DistributeCommand implements Instructable {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributeCommand.class);
 
@@ -23,5 +23,10 @@ public class DistributeCommand {
         logger.info("Distribute start.");
         distributor.distribute();
         logger.info("Distribute complete.");
+    }
+
+    @Override
+    public void instruct(Object obj) {
+        
     }
 }

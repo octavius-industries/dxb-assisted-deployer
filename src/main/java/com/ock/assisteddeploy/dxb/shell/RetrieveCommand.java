@@ -9,7 +9,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class RetrieveCommand {
+public class RetrieveCommand implements Instructable {
 
     private static final Logger logger = LoggerFactory.getLogger(RetrieveCommand.class);
 
@@ -25,5 +25,10 @@ public class RetrieveCommand {
         logger.info("Retrieve start.");
         acquirer.acquire(null);
         logger.info("Retrieve complete.");
+    }
+
+    @Override
+    public void instruct(Object obj) {
+
     }
 }
