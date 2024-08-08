@@ -51,6 +51,6 @@ public class BuildCommand implements Instructable {
 
     @Override
     public void instruct(Object obj) {
-
+        build((File) obj);
     }
 }

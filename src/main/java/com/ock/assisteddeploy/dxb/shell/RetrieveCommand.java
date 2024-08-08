@@ -29,6 +29,6 @@ public class RetrieveCommand implements Instructable {
 
     @Override
     public void instruct(Object obj) {
-
+        retrieve();
     }
 }

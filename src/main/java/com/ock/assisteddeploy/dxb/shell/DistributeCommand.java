@@ -27,6 +27,6 @@ public class DistributeCommand implements Instructable {
 
     @Override
     public void instruct(Object obj) {
-        
+        distribute();
     }
 }
