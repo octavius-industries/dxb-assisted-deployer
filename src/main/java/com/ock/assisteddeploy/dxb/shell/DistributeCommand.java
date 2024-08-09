@@ -8,7 +8,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class DistributeCommand implements Command {
+public class DistributeCommand implements Command, DistributeSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributeCommand.class);
 
@@ -28,5 +28,11 @@ public class DistributeCommand implements Command {
     @Override
     public void instruct(Object obj) {
         distribute();
+    }
+
+    @Override
+    public void accept(CommandVisitor visitor) {
+        visitor.visit((DistributeSupport) this);
+
     }
 }

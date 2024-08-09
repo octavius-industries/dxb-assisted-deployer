@@ -8,7 +8,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class DeployCommand implements Command {
+public class DeployCommand implements Command, DeploySupport {
 
     private static final Logger logger = LoggerFactory.getLogger(DeployCommand.class);
 
@@ -28,5 +28,10 @@ public class DeployCommand implements Command {
     @Override
     public void instruct(Object obj) {
         deploy();
+    }
+
+    @Override
+    public void accept(CommandVisitor visitor) {
+        visitor.visit((DeploySupport) this);
     }
 }

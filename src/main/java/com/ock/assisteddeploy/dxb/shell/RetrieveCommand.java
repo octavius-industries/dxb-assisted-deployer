@@ -9,7 +9,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class RetrieveCommand implements Command {
+public class RetrieveCommand implements Command, AcquireSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(RetrieveCommand.class);
 
@@ -30,5 +30,10 @@ public class RetrieveCommand implements Command {
     @Override
     public void instruct(Object obj) {
         retrieve();
+    }
+
+    @Override
+    public void accept(CommandVisitor visitor) {
+        visitor.visit((AcquireSupport) this);
     }
 }
