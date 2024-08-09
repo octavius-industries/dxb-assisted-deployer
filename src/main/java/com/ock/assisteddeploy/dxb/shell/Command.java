@@ -1,6 +1,6 @@
 package com.ock.assisteddeploy.dxb.shell;
 
-public interface Instructable {
+public interface Command {
 
     void instruct(Object obj);
 }
