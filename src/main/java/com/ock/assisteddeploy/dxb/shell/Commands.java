@@ -1,5 +1,6 @@
 package com.ock.assisteddeploy.dxb.shell;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -13,7 +14,10 @@ public class Commands {
     public static final String VERB_DEPLOY = "deploy";
     public static final String VERB_RUN = "run";
 
-    private static final Map<Verb, Command> commandMap = Map.of(
+
+    private static Commands instance;
+/*
+    private final Map<Verb, Command> commandMap = Map.of(
             Verb.BUILD, new BuildCommand(),
             Verb.GET, new RetrieveCommand(),
             Verb.PUT, new DistributeCommand(),
@@ -21,12 +25,22 @@ public class Commands {
             Verb.RUN, new ExecuteCommand()
     );
 
+ */
+
+    private Map<String, Command> commandMap;
+
+    @Autowired
+    public Commands(Map<String, Command> commands) {
+        this.commandMap = commands;
+        Commands.instance = this;
+    }
+
     public static Command from(String verb) {
-        return commandMap.get(Commands.Verb.valueOf(verb.toUpperCase()));
+        return instance.commandMap.get(verb);
     }
 
     public static Command get(Commands.Verb verb) {
-        return commandMap.get(verb);
+        return instance.commandMap.get(verb.getString().toLowerCase());
     }
 
     public enum Verb {
