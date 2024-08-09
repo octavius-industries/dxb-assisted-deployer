@@ -54,6 +54,10 @@ public class BuildCommand implements Command {
 
     @Override
     public void instruct(Object obj) {
-        build((File) obj);
+        if (obj instanceof String) {
+            build(new File((String) obj));
+        } else {
+            build((File) obj);
+        }
     }
 }
