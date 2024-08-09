@@ -8,14 +8,17 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class DeployCommand implements Instructable {
+public class DeployCommand implements Command {
 
     private static final Logger logger = LoggerFactory.getLogger(DeployCommand.class);
 
     @Autowired
     private RemoteShellExecutor shellExecutor;
 
-    @ShellMethod(value = "Deploy the distributed artifact to the target environment and restart.")
+    @ShellMethod(
+            value = "Deploy the distributed artifact to the target environment and restart.",
+            key = Commands.VERB_DEPLOY
+    )
     public void deploy() {
         logger.info("Deploy start.");
         shellExecutor.execute();

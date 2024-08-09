@@ -14,7 +14,7 @@ import org.springframework.shell.standard.ShellOption;
 import java.io.File;
 
 @ShellComponent
-public class BuildCommand implements Instructable {
+public class BuildCommand implements Command {
     private static final Logger logger = LoggerFactory.getLogger(BuildCommand.class);
 
     @Autowired
@@ -27,7 +27,10 @@ public class BuildCommand implements Instructable {
     @Autowired
     private VaultKeeper vaultKeeper;
 
-    @ShellMethod(value = "Build the source code locally. This compiles the source into artifacts and put into artifact vault for deployment.")
+    @ShellMethod(
+            value = "Build the source code locally. This compiles the source into artifacts and put into artifact vault for deployment.",
+            key = Commands.VERB_BUILD
+    )
     public void build(
             @ShellOption(
                     value = "repo",

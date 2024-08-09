@@ -8,7 +8,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class DistributeCommand implements Instructable {
+public class DistributeCommand implements Command {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributeCommand.class);
 
@@ -17,7 +17,7 @@ public class DistributeCommand implements Instructable {
 
     @ShellMethod(
             value = "Distribute the artifact vault to the specified target locations or servers.",
-            key = "put"
+            key = Commands.VERB_PUT
     )
     public void distribute() {
         logger.info("Distribute start.");

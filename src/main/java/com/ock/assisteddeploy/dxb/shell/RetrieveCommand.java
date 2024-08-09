@@ -9,7 +9,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class RetrieveCommand implements Instructable {
+public class RetrieveCommand implements Command {
 
     private static final Logger logger = LoggerFactory.getLogger(RetrieveCommand.class);
 
@@ -19,7 +19,7 @@ public class RetrieveCommand implements Instructable {
 
     @ShellMethod(
             value = "Retrieve the artifact from the build server to artifact vault",
-            key = "get"
+            key = Commands.VERB_GET
     )
     public void retrieve() {
         logger.info("Retrieve start.");
