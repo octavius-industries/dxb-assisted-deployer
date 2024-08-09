@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
+@Component(Commands.VERB_BUILD)
 @ShellComponent
 public class BuildCommand implements Command, AcquireSupport {
     private static final Logger logger = LoggerFactory.getLogger(BuildCommand.class);
