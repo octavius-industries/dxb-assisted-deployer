@@ -14,7 +14,7 @@ import org.springframework.shell.standard.ShellOption;
 import java.io.File;
 
 @ShellComponent
-public class BuildCommand implements Command {
+public class BuildCommand implements Command, AcquireSupport {
     private static final Logger logger = LoggerFactory.getLogger(BuildCommand.class);
 
     @Autowired
@@ -59,5 +59,10 @@ public class BuildCommand implements Command {
         } else {
             build((File) obj);
         }
+    }
+
+    @Override
+    public void accept(CommandVisitor visitor) {
+        visitor.visit((AcquireSupport) this);
     }
 }
