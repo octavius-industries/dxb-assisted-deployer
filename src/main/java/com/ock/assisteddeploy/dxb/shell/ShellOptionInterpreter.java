@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 
 public class ShellOptionInterpreter {
@@ -26,7 +27,7 @@ public class ShellOptionInterpreter {
 
     public Map<Command, Object> interpret(String... options) {
 
-        Map<Command, Object> cmdArgMap = new HashMap<>();
+        Map<Command, Object> cmdArgMap = new TreeMap<>(new WorkflowSortingStrategy());
         CountDownLatch latch = new CountDownLatch(options.length);
 
         while (latch.getCount() > 0) {
