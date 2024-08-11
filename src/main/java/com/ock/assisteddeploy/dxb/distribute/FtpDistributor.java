@@ -19,8 +19,6 @@ public class FtpDistributor implements ArtifactDistributor {
     @Autowired
     private Configuration config;
 
-    private static final String SKELETON_LABEL_TEMPLATE = "dxb_%s";
-
     @Override
     public void distribute() {
         Configuration.Distribute distributeConfig = config.getDistribute();
@@ -29,8 +27,7 @@ public class FtpDistributor implements ArtifactDistributor {
             // connect ftp server
             ftp.connect(distributeConfig.getHostname(), distributeConfig.getPort());
             ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
-            // ftp.enterLocalPassiveMode();
-            ftp.enterLocalActiveMode();
+            ftp.enterLocalPassiveMode();
             // login
             boolean validLogin = ftp.login(distributeConfig.getUser(), distributeConfig.getPassword());
             if (validLogin) {
@@ -38,7 +35,7 @@ public class FtpDistributor implements ArtifactDistributor {
                 ftp.changeWorkingDirectory(distributeConfig.getDeploymentBase());
 
                 String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").format(LocalDateTime.now());
-                String folderLabel = String.format(SKELETON_LABEL_TEMPLATE, timestamp);
+                String folderLabel = String.format(config.getLabelTemplate(), timestamp);
 
                 if (ftp.makeDirectory(folderLabel)) {
                     logger.info("Deployment folder create: {}/{}.", ftp.printWorkingDirectory(), folderLabel);
