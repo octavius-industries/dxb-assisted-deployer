@@ -13,6 +13,8 @@ public class Configuration {
 
     private File artifactVault;
 
+    private String labelTemplate;
+
     private Build build;
 
     private Retrieve retrieve;
@@ -27,6 +29,14 @@ public class Configuration {
 
     public void setArtifactVault(File artifactVault) {
         this.artifactVault = artifactVault;
+    }
+
+    public String getLabelTemplate() {
+        return labelTemplate;
+    }
+
+    public void setLabelTemplate(String labelTemplate) {
+        this.labelTemplate = labelTemplate;
     }
 
     public Build getBuild() {
