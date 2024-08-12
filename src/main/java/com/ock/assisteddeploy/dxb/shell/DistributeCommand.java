@@ -4,6 +4,7 @@ import com.ock.assisteddeploy.dxb.distribute.ArtifactDistributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ public class DistributeCommand implements Command, DistributeSupport {
     private static final Logger logger = LoggerFactory.getLogger(DistributeCommand.class);
 
     @Autowired
+    @Qualifier("scpDistributor")
     private ArtifactDistributor distributor;
 
     @ShellMethod(
