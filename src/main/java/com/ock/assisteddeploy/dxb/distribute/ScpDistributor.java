@@ -95,8 +95,9 @@ public class ScpDistributor implements ArtifactDistributor {
     }
 
     protected void issue(SSHClient ssh, String command) throws TransportException, ConnectionException {
-        Session session = ssh.startSession();
-        session.exec(command).join();
-        session.close();
+        try (Session session = ssh.startSession();
+             Session.Command cmd = session.exec(command)) {
+            cmd.join();
+        }
     }
 }
