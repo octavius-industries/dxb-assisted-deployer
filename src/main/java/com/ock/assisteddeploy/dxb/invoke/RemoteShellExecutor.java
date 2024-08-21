@@ -1,62 +1,85 @@
 package com.ock.assisteddeploy.dxb.invoke;
 
+import com.jcraft.jsch.*;
 import com.ock.assisteddeploy.dxb.Configuration;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Properties;
+import java.util.concurrent.*;
 
 @Component
 public class RemoteShellExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteShellExecutor.class);
 
+    private static final String CHANNEL_TYPE_SHELL = "shell";
+
+    private static final String SSH_STRICT_HOST_KEY_CHECKING = "StrictHostKeyChecking";
+
+
     @Autowired
     private Configuration config;
 
     public void execute() {
-        SSHClient ssh = new SSHClient();
+
         Configuration.Deploy deployConfig = config.getDeploy();
+
         try {
-            // connect ssh
-            ssh.addHostKeyVerifier(new PromiscuousVerifier());
-            ssh.connect(deployConfig.getHostname(), deployConfig.getPort());
-            ssh.authPassword(deployConfig.getUser(), deployConfig.getPassword());
+            Session session = createJschSession();
+            session.connect();
 
-            // execute deployment script
+            // open shell
+            Channel shell = session.openChannel(CHANNEL_TYPE_SHELL);
+            shell.connect();
+
+            // start logging ssh output
+            RemoteShellLoggingThread loggingThread = new RemoteShellLoggingThread(shell);
+            loggingThread.start();
+
+            // execute scripts
+            PrintStream printStream = new PrintStream(shell.getOutputStream(), true);
             for (String script : deployConfig.getScripts()) {
-                try (Session session = ssh.startSession();
-                     Session.Command cmd = session.exec(script)) {
-                    // Read the output
-                    logStream(cmd.getInputStream());
-                    logStream(cmd.getErrorStream());
-
-                    // wait for command complete
-                    cmd.join();
-                }
+                printStream.println(script);
+                Thread.sleep(100);
             }
 
-            ssh.disconnect();
+
+            // wait for logging thread complete
+            loggingThread.join();
+
+            shell.disconnect();
+            session.disconnect();
+
+        } catch (JSchException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    protected void logStream(InputStream stream) throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                logger.info(line);
-            }
-        }
+    protected @NotNull Session createJschSession() throws JSchException {
+        Configuration.Deploy deployConfig = config.getDeploy();
+
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(deployConfig.getUser(), deployConfig.getHostname(), deployConfig.getPort());
+        session.setPassword(deployConfig.getPassword());
+
+        // setup session configuration
+        Properties config = new Properties();
+        // disable strict host key checking for simplicity
+        config.put(SSH_STRICT_HOST_KEY_CHECKING, "no");
+        session.setConfig(config);
+
+        return session;
     }
+
 }
