@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 public class RemoteShellLoggingThread extends Thread {
 
-    private static final Logger logger = LoggerFactory.getLogger(RemoteShellExecutor2.RemoteShellLoggingThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(RemoteShellLoggingThread.class);
 
     private static final String ANSI_ESC_SEQUENCE = "\\u001B\\[[;?0-9]*[A-Za-z]";
 
