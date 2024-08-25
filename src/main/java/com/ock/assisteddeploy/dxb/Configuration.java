@@ -15,6 +15,8 @@ public class Configuration {
 
     private String labelTemplate;
 
+    private String releaseName;
+
     private Build build;
 
     private Retrieve retrieve;
@@ -37,6 +39,14 @@ public class Configuration {
 
     public void setLabelTemplate(String labelTemplate) {
         this.labelTemplate = labelTemplate;
+    }
+
+    public String getReleaseName() {
+        return releaseName;
+    }
+
+    public void setReleaseName(String releaseName) {
+        this.releaseName = releaseName;
     }
 
     public Build getBuild() {
