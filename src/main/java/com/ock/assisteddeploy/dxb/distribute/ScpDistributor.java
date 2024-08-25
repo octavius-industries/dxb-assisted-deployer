@@ -50,8 +50,8 @@ public class ScpDistributor implements ArtifactDistributor {
             File skeleton = distributeConfig.getDeploymentSkeleton();
             scp.upload(new FileSystemFile(skeleton), deployBase.getUnixPath());
 
-            // rename to timestamp
-            UnixFile stampedPath = renameAsNow(ssh, new UnixFile(deployBase, skeleton.getPath()));
+            // rename according to releaseName
+            UnixFile stampedPath = nameRelease(ssh, new UnixFile(deployBase, skeleton.getPath()));
             uploadArtifact(scp, stampedPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -69,12 +69,11 @@ public class ScpDistributor implements ArtifactDistributor {
         }
     }
 
-    protected UnixFile renameAsNow(SSHClient ssh, UnixFile skeletonPath) throws TransportException, ConnectionException {
+    protected UnixFile nameRelease(SSHClient ssh, UnixFile skeletonPath) throws TransportException, ConnectionException {
 
         Configuration.Distribute distributeConfig = config.getDistribute();
 
-        String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").format(LocalDateTime.now());
-        String folderLabel = String.format(config.getLabelTemplate(), timestamp);
+        String folderLabel = String.format(config.getLabelTemplate(), config.getReleaseName());
 
         UnixFile stampedPath = new UnixFile(distributeConfig.getDeploymentBase(), folderLabel);
         // name skeleton to release folder
