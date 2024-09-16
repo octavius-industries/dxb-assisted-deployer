@@ -10,7 +10,7 @@ import java.net.URL;
 @Component
 @ConfigurationProperties(prefix = "dad")
 public class Configuration {
-    
+
     private File artifactVault;
 
     private String labelTemplate;
@@ -31,6 +31,10 @@ public class Configuration {
 
     public void setArtifactVault(File artifactVault) {
         this.artifactVault = artifactVault;
+    }
+
+    public File getDedicatedVault() {
+        return new File(artifactVault, this.getReleaseName());
     }
 
     public String getLabelTemplate() {
