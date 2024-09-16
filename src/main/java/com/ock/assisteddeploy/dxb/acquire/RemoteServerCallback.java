@@ -1,6 +1,7 @@
 package com.ock.assisteddeploy.dxb.acquire;
 
 import com.ock.assisteddeploy.dxb.Configuration;
+import com.ock.assisteddeploy.dxb.VaultKeeper;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -8,18 +9,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 
 public class RemoteServerCallback implements Callback {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteServerCallback.class);
 
-    private static final int SIZE_8KB = 8192;
+    @Autowired
+    private VaultKeeper vaultKeeper;
 
     private Configuration config;
 
@@ -46,22 +46,7 @@ public class RemoteServerCallback implements Callback {
         String artifactName = FilenameUtils.getName(artifactUrl);
         logger.info("Downloading {}", artifactUrl);
 
-        write(response.body(), new File(config.getArtifactVault(), artifactName));
+        vaultKeeper.write(response.body(), artifactName);
         latch.countDown();
-    }
-
-    // write http response to file
-    protected void write(okhttp3.ResponseBody responseBody, File file) throws IOException {
-        file.getParentFile().mkdirs();
-        try (BufferedOutputStream out = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
-            byte[] buffer = new byte[SIZE_8KB];
-            int byteRead;
-
-            while ((byteRead = responseBody.byteStream().read(buffer)) != -1) {
-                out.write(buffer, 0, byteRead);
-            }
-            out.flush();
-        }
-
     }
 }
