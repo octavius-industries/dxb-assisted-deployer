@@ -4,6 +4,7 @@ import com.ock.assisteddeploy.dxb.Configuration;
 import com.ock.assisteddeploy.dxb.VaultKeeper;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -13,6 +14,9 @@ import java.util.concurrent.CountDownLatch;
 
 @Component("remoteServerAcquirer")
 public class RemoteServerAcquirer implements ArtifactAcquirer {
+
+    @Autowired
+    private AutowireCapableBeanFactory beanFactory;
 
     @Autowired
     private Configuration config;
@@ -33,7 +37,9 @@ public class RemoteServerAcquirer implements ArtifactAcquirer {
                     .url(artifactsUrl)
                     .build();
 
-            client.newCall(request).enqueue(new RemoteServerCallback(config, latch));
+            RemoteServerCallback callback = new RemoteServerCallback(config, latch);
+            beanFactory.autowireBean(callback);
+            client.newCall(request).enqueue(callback);
         }
         try {
             latch.await();
