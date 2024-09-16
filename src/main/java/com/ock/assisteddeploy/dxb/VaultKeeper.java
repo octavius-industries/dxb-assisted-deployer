@@ -39,7 +39,7 @@ public class VaultKeeper {
             for (File artifact : config.getBuild().getArtifacts()) {
                 FileUtils.moveFileToDirectory(artifact, config.getDedicatedVault(), true);
             }
-            logger.info("Artifacts are stored into vault");
+            logger.info("Artifacts are stored into vault: {}", config.getDedicatedVault().getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

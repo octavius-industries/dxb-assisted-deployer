@@ -3,6 +3,8 @@ package com.ock.assisteddeploy.dxb.acquire;
 import com.ock.assisteddeploy.dxb.Configuration;
 import com.ock.assisteddeploy.dxb.VaultKeeper;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,8 @@ import java.util.concurrent.CountDownLatch;
 
 @Component("remoteServerAcquirer")
 public class RemoteServerAcquirer implements ArtifactAcquirer {
+
+    private static final Logger logger = LoggerFactory.getLogger(RemoteServerAcquirer.class);
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -43,6 +47,7 @@ public class RemoteServerAcquirer implements ArtifactAcquirer {
         }
         try {
             latch.await();
+            logger.info("Artifacts are stored into vault: {}", config.getDedicatedVault().getAbsolutePath());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
