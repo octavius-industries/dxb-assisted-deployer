@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RemoteServerCallback implements Callback {
 
@@ -25,28 +26,38 @@ public class RemoteServerCallback implements Callback {
 
     private CountDownLatch latch;
 
-    public RemoteServerCallback(Configuration config, CountDownLatch latch) {
+    private AtomicInteger successedCount;
+
+    public RemoteServerCallback(Configuration config, CountDownLatch latch, AtomicInteger count) {
         this.config = config;
         this.latch = latch;
+        this.successedCount = count;
     }
 
     @Override
     public void onFailure(@NotNull Call call, @NotNull IOException e) {
         latch.countDown();
-        throw new RuntimeException(e);
+        String artifactUrl = call.request().url().toString();
+        logger.info("Downloading {}", artifactUrl);
+        logger.error("Connection failed", new RuntimeException(e));
     }
 
     @Override
     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-        if (!response.isSuccessful()) {
-            throw new IOException("Unexpected code " + response);
+        try {
+            String artifactUrl = call.request().url().toString();
+            logger.info("Downloading {}", artifactUrl);
+            if (!response.isSuccessful()) {
+                logger.error("UnSuccessful callback", new IOException("Unexpected response: " + response));
+                return;
+            }
+
+            String artifactName = FilenameUtils.getName(artifactUrl);
+            vaultKeeper.write(response.body(), artifactName);
+            successedCount.incrementAndGet();
+        } finally {
+            latch.countDown();
         }
 
-        String artifactUrl = call.request().url().toString();
-        String artifactName = FilenameUtils.getName(artifactUrl);
-        logger.info("Downloading {}", artifactUrl);
-
-        vaultKeeper.write(response.body(), artifactName);
-        latch.countDown();
     }
 }

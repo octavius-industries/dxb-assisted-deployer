@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component("remoteServerAcquirer")
 public class RemoteServerAcquirer implements ArtifactAcquirer {
@@ -34,19 +35,22 @@ public class RemoteServerAcquirer implements ArtifactAcquirer {
     public int acquire(URI uri) {
         vaultKeeper.clear();
         List<URL> urls = config.getRetrieve().getArtifacts();
-        CountDownLatch latch = new CountDownLatch(urls.size());
+        int queueLength = urls.size();
+        CountDownLatch latch = new CountDownLatch(queueLength);
+        AtomicInteger count = new AtomicInteger(0);
 
         for (URL artifactsUrl : urls) {
             Request request = new Request.Builder()
                     .url(artifactsUrl)
                     .build();
 
-            RemoteServerCallback callback = new RemoteServerCallback(config, latch);
+            RemoteServerCallback callback = new RemoteServerCallback(config, latch, count);
             beanFactory.autowireBean(callback);
             client.newCall(request).enqueue(callback);
         }
         try {
             latch.await();
+            logger.info("{} out of {} successful", count.get(), queueLength);
             logger.info("Artifacts are stored into vault: {}", config.getDedicatedVault().getAbsolutePath());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
